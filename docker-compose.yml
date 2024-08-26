@@ -1,0 +1,11 @@
+services:
+
+  wp-parse-theme-css:
+
+    build:
+      context: ./tools/wordpress-parse-theme-css
+
+    image: varilink/tools/wordpress-parse-theme-css
+
+    volumes:
+      - ./wordpress/theme/:/theme/
