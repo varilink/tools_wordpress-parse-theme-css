@@ -1,4 +1,8 @@
 FROM perl:5
+LABEL maintainer="david.williamson@varilink.co.uk"
+ARG UID=1000
+
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 
 RUN                                                                            \
   cpanm --notest                                                               \
@@ -9,9 +13,13 @@ RUN                                                                            \
     File::Slurp                                                                \
     JSON                                                                       \
     Ref::Util                                                                  \
-    Scalar::Util
+    Scalar::Util                                                            && \
+  chmod +x /usr/local/bin/docker-entrypoint.sh
 
-COPY ./app.pl /usr/src/
-WORKDIR /usr/src/
+COPY ./pl/ /usr/src/app/
 
-CMD [ "perl", "./app.pl" ]
+USER ${UID}
+WORKDIR /workdir/
+
+COPY docker-entrypoint.sh /
+ENTRYPOINT [ "docker-entrypoint.sh" ]

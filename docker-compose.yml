@@ -1,11 +1,6 @@
 services:
 
-  wp-parse-theme-css:
+  perl:
 
-    build:
-      context: ./tools/wordpress-parse-theme-css
-
-    image: varilink/tools/wordpress-parse-theme-css
-
-    volumes:
-      - ./wordpress/theme/:/theme/
+    build: tools/perl
+    image: varilink/tools/perl
