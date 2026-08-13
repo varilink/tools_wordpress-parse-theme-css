@@ -14,7 +14,7 @@ use Scalar::Util qw/reftype/;
 
 # Read in the contents of the theme's JSON file.
 
-my $json = from_json( read_file( '/theme/theme.json', binmode => 'utf8' ) );
+my $json = from_json( read_file( 'theme.json', binmode => 'utf8' ) );
 
 # Remove any existing css properties from the JSON.
 
@@ -70,11 +70,11 @@ while ( $work_to_do ) {
 
 # Add global (not block specific) custom CSS into the theme.json if defined.
 
-if ( -f '/theme/css/global.css' ) {
+if ( -f 'theme.json.css' ) {
 
     my %options = ( decomment => 1 );
     my $css = tidy_css (
-        read_file( '/theme/css/global.css' ), %options
+        scalar read_file( 'theme.json.css' ), %options
     );
     $json->{styles}->{css} = $css;
 
@@ -84,7 +84,7 @@ if ( -f '/theme/css/global.css' ) {
 
 sub wanted
 {
-    if ( $File::Find::name =~ m~^/theme/css/blocks/([\w-]+/[\w-]+)\.css$~ ) {
+    if ( $File::Find::name =~ m~^blocks/([\w-]+/[\w-]+)\.css$~ ) {
         my $cssObj = new CSS::Simple();
         $cssObj->read_file( { filename => "$File::Find::name" } );
         my %options = ( decomment => 1 );
@@ -95,11 +95,11 @@ sub wanted
     }
 }
 
-find( \&wanted, ( '/theme/css/blocks/' ) );
+find( \&wanted, ( 'blocks/' ) ) if -d 'blocks/';
 
 # Write out the revised (possibly) theme.json file.
 
-open( FH, '>', '/theme/theme.json' );
+open( FH, '>', 'theme.json' );
 print FH JSON->new->canonical->pretty->encode( $json );
 close( FH );
 
